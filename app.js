@@ -750,16 +750,20 @@ function renderFeatureMatrix() {
 
       const label = featureKey
         .replace(/_/g, ' ')
-        .replace(/\b\w/g, (l) => l.toUpperCase());
+        .replace(/\b\w/g, l => l.toUpperCase());
       const description = category.features[featureKey];
+      const cellsHTML = ['fishbrain', 'infinite_outdoors', 'fishingbooker']
+        .map(cell)
+        .join('');
 
       featureRow.innerHTML = `
-        <div class="feature-name">${label}
+        <div class="feature-name">
+          ${label}
           <span class="info-icon" tabindex="0">I
             <span class="tooltip">${description}</span>
           </span>
         </div>
-        ${['fishbrain', 'infinite_outdoors', 'fishingbooker'].map(cell).join('')}
+        ${cellsHTML}
       `;
       matrixBody.appendChild(featureRow);
     });
