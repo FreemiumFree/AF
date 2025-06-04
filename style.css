@@ -101,6 +101,7 @@
   --container-xl: 1280px;
 }
 
+
 /* Dark mode colors */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -1399,6 +1400,7 @@ a:hover {
 
 .feature-name {
   font-weight: var(--font-weight-medium);
+  justify-content: space-between;
 }
 
 .feature-status:last-child {
@@ -1433,6 +1435,48 @@ a:hover {
 
 .status-none {
   color: var(--color-error);
+}
+
+/* Info icon tooltip */
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: var(--space-8);
+  border: 1px solid var(--color-info);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-info);
+  cursor: pointer;
+  position: relative;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.info-icon .tooltip {
+  display: none;
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: var(--space-8);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: normal;
+  z-index: 10;
+  width: max-content;
+  max-width: 200px;
+}
+
+.info-icon:hover .tooltip,
+.info-icon:focus .tooltip {
+  display: block;
 }
 
 /* Detailed Features */

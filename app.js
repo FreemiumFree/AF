@@ -748,9 +748,22 @@ function renderFeatureMatrix() {
         return `<div class="feature-status${editableClass}" data-category="${categoryKey}" data-feature="${featureKey}" data-competitor="${comp}">${getStatusIcon(status)}</div>`;
       };
 
+      const label = featureKey
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+      const description = category.features[featureKey];
+      const cellsHTML = ['fishbrain', 'infinite_outdoors', 'fishingbooker']
+        .map(cell)
+        .join('');
+
       featureRow.innerHTML = `
-        <div class="feature-name">${category.features[featureKey]}</div>
-        ${['fishbrain','infinite_outdoors','fishingbooker'].map(cell).join('')}
+        <div class="feature-name">
+          ${label}
+          <span class="info-icon" tabindex="0">I
+            <span class="tooltip">${description}</span>
+          </span>
+        </div>
+        ${cellsHTML}
       `;
       matrixBody.appendChild(featureRow);
     });
