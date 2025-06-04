@@ -646,7 +646,6 @@ function saveData() {
 
 // DOM elements
 let matrixBody;
-let featureCategories;
 let categoryScores;
 let filterButtons;
 let editToggleBtn;
@@ -660,7 +659,6 @@ let currentFilter = 'all';
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
   matrixBody = document.getElementById('matrixBody');
-  featureCategories = document.getElementById('featureCategories');
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
   editToggleBtn = document.getElementById('editToggle');
@@ -675,7 +673,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   setupFilterButtons();
   renderFeatureMatrix();
-  renderDetailedFeatures();
   renderCategoryScores();
 });
 
@@ -763,42 +760,6 @@ function renderFeatureMatrix() {
   if (editMode) attachCellHandlers();
 }
 
-// Render detailed feature categories
-function renderDetailedFeatures() {
-  if (!featureCategories) return;
-
-  const categories = competitorData.feature_categories;
-
-  Object.keys(categories).forEach(categoryKey => {
-    const category = categories[categoryKey];
-    
-    const categoryDiv = document.createElement('div');
-    categoryDiv.className = 'category-detail';
-    categoryDiv.innerHTML = `
-      <div class="category-header" onclick="toggleCategory('${categoryKey}')">
-        <h3>${category.name}</h3>
-        <span class="expand-icon">▼</span>
-      </div>
-      <div class="category-content">
-        <div class="feature-list">
-          ${Object.keys(category.features).map(featureKey => `
-            <div class="feature-item">
-              <strong>${featureKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong> ${category.features[featureKey]}
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-    
-    featureCategories.appendChild(categoryDiv);
-  });
-}
-
-// Toggle category expansion
-function toggleCategory(categoryKey) {
-  const categoryDetail = event.currentTarget.parentElement;
-  categoryDetail.classList.toggle('expanded');
-}
 
 // Calculate category scores
 function calculateCategoryScore(categoryKey, competitorKey) {
@@ -873,6 +834,3 @@ function handleStatusCycle(event) {
   saveData();
   renderFeatureMatrix();
 }
-
-// Make toggleCategory available globally
-window.toggleCategory = toggleCategory;
