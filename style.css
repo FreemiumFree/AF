@@ -1410,6 +1410,14 @@ a:hover {
   font-size: var(--font-size-lg);
 }
 
+.feature-status.editable {
+  cursor: pointer;
+}
+
+.feature-status.editable:hover {
+  background: var(--color-secondary-hover);
+}
+
 .status-icon {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
