@@ -783,7 +783,7 @@ function renderDetailedFeatures() {
     const categoryDiv = document.createElement('div');
     categoryDiv.className = 'category-detail';
     categoryDiv.innerHTML = `
-      <div class="category-header" onclick="toggleCategory('${categoryKey}')">
+      <div class="category-header" onclick="toggleCategory(event, '${categoryKey}')">
         <h3>${category.name}</h3>
         <span class="expand-icon">▼</span>
       </div>
@@ -803,7 +803,7 @@ function renderDetailedFeatures() {
 }
 
 // Toggle category expansion
-function toggleCategory(categoryKey) {
+function toggleCategory(event, categoryKey) {
   const categoryDetail = event.currentTarget.parentElement;
   categoryDetail.classList.toggle('expanded');
 }
