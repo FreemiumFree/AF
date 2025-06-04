@@ -754,11 +754,7 @@ function renderFeatureMatrix() {
       const description = category.features[featureKey];
 
       featureRow.innerHTML = `
-        <div class="feature-name">${label}
-          <span class="info-icon" tabindex="0">i
-            <span class="tooltip">${description}</span>
-          </span>
-        </div>
+        <div class="feature-name"><span class="feature-label">${label}</span><span class="feature-description">${description}</span></div>
         ${['fishbrain', 'infinite_outdoors', 'fishingbooker'].map(cell).join('')}
       `;
       matrixBody.appendChild(featureRow);
