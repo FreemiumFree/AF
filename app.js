@@ -1,5 +1,5 @@
 // Application data with comprehensive feature matrix
-const competitorData = {
+const defaultData = {
   "competitors": {
     "fishbrain": {
       "name": "Fishbrain",
@@ -637,11 +637,22 @@ const competitorData = {
   }
 };
 
+// Load data from localStorage if available
+let competitorData = JSON.parse(localStorage.getItem('competitorData')) || defaultData;
+
+function saveData() {
+  localStorage.setItem('competitorData', JSON.stringify(competitorData));
+}
+
 // DOM elements
 let matrixBody;
 let featureCategories;
 let categoryScores;
 let filterButtons;
+let editToggleBtn;
+
+// Edit mode state
+let editMode = false;
 
 // Current filter
 let currentFilter = 'all';
@@ -652,6 +663,15 @@ document.addEventListener('DOMContentLoaded', function() {
   featureCategories = document.getElementById('featureCategories');
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
+  editToggleBtn = document.getElementById('editToggle');
+
+  if (editToggleBtn) {
+    editToggleBtn.addEventListener('click', function() {
+      editMode = !editMode;
+      this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
+      renderFeatureMatrix();
+    });
+  }
 
   setupFilterButtons();
   renderFeatureMatrix();
@@ -721,15 +741,21 @@ function renderFeatureMatrix() {
     Object.keys(category.features).forEach(featureKey => {
       const featureRow = document.createElement('div');
       featureRow.className = 'matrix-row';
+
+      const cell = (comp) => {
+        const status = competitors[comp].features[categoryKey][featureKey];
+        const editableClass = editMode ? ' editable' : '';
+        return `<div class="feature-status${editableClass}" data-category="${categoryKey}" data-feature="${featureKey}" data-competitor="${comp}">${getStatusIcon(status)}</div>`;
+      };
+
       featureRow.innerHTML = `
         <div class="feature-name">${category.features[featureKey]}</div>
-        <div class="feature-status">${getStatusIcon(competitors.fishbrain.features[categoryKey][featureKey])}</div>
-        <div class="feature-status">${getStatusIcon(competitors.infinite_outdoors.features[categoryKey][featureKey])}</div>
-        <div class="feature-status">${getStatusIcon(competitors.fishingbooker.features[categoryKey][featureKey])}</div>
+        ${['fishbrain','infinite_outdoors','fishingbooker'].map(cell).join('')}
       `;
       matrixBody.appendChild(featureRow);
     });
   });
+  if (editMode) attachCellHandlers();
 }
 
 // Render detailed feature categories
@@ -813,6 +839,34 @@ function renderCategoryScores() {
     
     categoryScores.appendChild(scoreDiv);
   });
+}
+
+// Handle cell click in edit mode
+function attachCellHandlers() {
+  const cells = document.querySelectorAll('.feature-status.editable');
+  cells.forEach(cell => {
+    cell.addEventListener('click', handleStatusCycle);
+  });
+}
+
+function handleStatusCycle(event) {
+  if (!editMode) return;
+  const cell = event.currentTarget;
+  const comp = cell.dataset.competitor;
+  const category = cell.dataset.category;
+  const feature = cell.dataset.feature;
+
+  let current = competitorData.competitors[comp].features[category][feature];
+  if (current === 'premium') current = 'partial';
+
+  let next;
+  if (current === true) next = 'partial';
+  else if (current === 'partial') next = false;
+  else next = true;
+
+  competitorData.competitors[comp].features[category][feature] = next;
+  saveData();
+  renderFeatureMatrix();
 }
 
 // Make toggleCategory available globally
