@@ -1575,24 +1575,6 @@ a:hover {
   color: var(--color-primary);
 }
 
-.insight-title[contenteditable="true"] {
-  cursor: text;
-  border-bottom: 1px dashed var(--color-border);
-}
-
-.insight-title[contenteditable="true"]:focus {
-  outline: var(--focus-outline);
-}
-
-.insights-grid li[contenteditable="true"] {
-  cursor: text;
-  border-bottom: 1px dashed var(--color-border);
-}
-
-.insights-grid li[contenteditable="true"]:focus {
-  outline: var(--focus-outline);
-}
-
 .insights-grid ul,
 .insights-grid ol {
   margin: 0;
@@ -1607,21 +1589,6 @@ a:hover {
 
 .insights-grid li:last-child {
   margin-bottom: 0;
-}
-
-.insight-actions {
-  margin-top: var(--space-12);
-  display: flex;
-  gap: var(--space-8);
-}
-
-.add-insight-btn {
-  margin-top: var(--space-16);
-}
-
-.insight-editable {
-  outline: 1px dashed var(--color-primary);
-  padding: 2px;
 }
 
 /* Give breathing room at the bottom of the insights section */
