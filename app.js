@@ -895,7 +895,12 @@ function handleStatusCycle(event) {
 function renderInsights() {
   if (!insightsGrid) return;
   insightsGrid.innerHTML = '';
-  if (!competitorData.insights) return;
+  if (!competitorData.insights || competitorData.insights.length === 0) {
+    const msg = document.createElement('p');
+    msg.textContent = 'No insights available.';
+    insightsGrid.appendChild(msg);
+    return;
+  }
 
   competitorData.insights.forEach((insight, index) => {
     const card = document.createElement('div');
