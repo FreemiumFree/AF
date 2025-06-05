@@ -1591,16 +1591,6 @@ a:hover {
   margin-bottom: 0;
 }
 
-.insight-actions {
-  margin-top: var(--space-12);
-  display: flex;
-  gap: var(--space-8);
-}
-
-.add-insight-btn {
-  margin-top: var(--space-16);
-}
-
 /* Give breathing room at the bottom of the insights section */
 .strategic-insights {
   margin-bottom: var(--space-32);
