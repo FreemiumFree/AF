@@ -865,10 +865,12 @@ function toggleInsightEditMode(enabled) {
       h.classList.add('editable-heading');
       h.setAttribute('contenteditable', 'true');
       h.addEventListener('blur', handleInsightBlur);
+      h.addEventListener('keydown', handleInsightKeydown);
     } else {
       h.classList.remove('editable-heading');
       h.removeAttribute('contenteditable');
       h.removeEventListener('blur', handleInsightBlur);
+      h.removeEventListener('keydown', handleInsightKeydown);
     }
   });
 }
@@ -877,4 +879,11 @@ function handleInsightBlur(e) {
   const id = e.target.dataset.insightId;
   insightTitles[id] = e.target.textContent.trim();
   saveInsightTitles();
+}
+
+function handleInsightKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    e.target.blur();
+  }
 }
