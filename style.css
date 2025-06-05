@@ -1557,9 +1557,17 @@ a:hover {
 }
 
 /* Strategic Insights */
-.strategic-insights h2 {
-  font-size: var(--font-size-3xl);
+.strategic-insights .insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: var(--space-24);
+}
+
+.strategic-insights .insights-header h2 {
+  font-size: var(--font-size-3xl);
+  margin: 0;
+  flex-grow: 1;
   text-align: center;
 }
 
@@ -1573,6 +1581,11 @@ a:hover {
   font-size: var(--font-size-lg);
   margin-bottom: var(--space-16);
   color: var(--color-primary);
+}
+
+.editable-title {
+  cursor: text;
+  border-bottom: 1px dashed var(--color-border);
 }
 
 .insights-grid ul,

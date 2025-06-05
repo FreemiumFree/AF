@@ -648,7 +648,8 @@ function saveData() {
 let matrixBody;
 let categoryScores;
 let filterButtons;
-let editToggleBtn;
+let editToggleBtns;
+let insightTitles;
 
 // Edit mode state
 let editMode = false;
@@ -661,19 +662,24 @@ document.addEventListener('DOMContentLoaded', function() {
   matrixBody = document.getElementById('matrixBody');
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
-  editToggleBtn = document.getElementById('editToggle');
+  editToggleBtns = document.querySelectorAll('.edit-toggle');
+  insightTitles = document.querySelectorAll('.insights-grid .card h3');
 
-  if (editToggleBtn) {
-    editToggleBtn.addEventListener('click', function() {
-      editMode = !editMode;
-      this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
-      renderFeatureMatrix();
+  if (editToggleBtns.length) {
+    editToggleBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        editMode = !editMode;
+        updateEditToggleText();
+        renderFeatureMatrix();
+        toggleTitleEditing();
+      });
     });
   }
 
   setupFilterButtons();
   renderFeatureMatrix();
   renderCategoryScores();
+  toggleTitleEditing();
 });
 
 // Setup filter button functionality
@@ -833,4 +839,19 @@ function handleStatusCycle(event) {
   competitorData.competitors[comp].features[category][feature] = next;
   saveData();
   renderFeatureMatrix();
+}
+
+function updateEditToggleText() {
+  if (!editToggleBtns) return;
+  editToggleBtns.forEach(btn => {
+    btn.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
+  });
+}
+
+function toggleTitleEditing() {
+  if (!insightTitles) return;
+  insightTitles.forEach(title => {
+    title.contentEditable = editMode;
+    title.classList.toggle('editable-title', editMode);
+  });
 }
