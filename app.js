@@ -723,7 +723,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   setupFilterButtons();
-  setupInsightTitleEditing();
   renderFeatureMatrix();
   renderCategoryScores();
   renderInsights();
@@ -919,6 +918,9 @@ function renderInsights() {
     body.className = 'card__body';
 
     const h3 = document.createElement('h3');
+    h3.className = 'insight-title';
+    h3.contentEditable = true;
+    h3.dataset.key = `title${index + 1}`;
     h3.textContent = insight.title;
     body.appendChild(h3);
 
@@ -955,6 +957,8 @@ function renderInsights() {
   addBtn.textContent = 'Add Insight';
   addBtn.addEventListener('click', addInsight);
   insightsGrid.appendChild(addBtn);
+
+  setupInsightTitleEditing();
 }
 
 function editInsight(index) {
