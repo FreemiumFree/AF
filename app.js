@@ -640,6 +640,9 @@ const defaultData = {
 // Load data from localStorage if available
 let competitorData = JSON.parse(localStorage.getItem('competitorData')) || defaultData;
 
+// Load saved strategic insight titles
+let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || {};
+
 function saveData() {
   localStorage.setItem('competitorData', JSON.stringify(competitorData));
 }
@@ -677,6 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   setupFilterButtons();
+  setupInsightTitleEditing();
   renderFeatureMatrix();
   renderCategoryScores();
   toggleInsightsEdit(editMode);
@@ -697,6 +701,21 @@ function setupFilterButtons() {
       
       // Re-render matrix
       renderFeatureMatrix();
+    });
+  });
+}
+
+// Enable editing for strategic insight titles
+function setupInsightTitleEditing() {
+  const titles = document.querySelectorAll('.insight-title');
+  titles.forEach(title => {
+    const key = title.dataset.key;
+    if (insightTitles[key]) {
+      title.textContent = insightTitles[key];
+    }
+    title.addEventListener('blur', () => {
+      insightTitles[key] = title.textContent.trim();
+      localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
     });
   });
 }
