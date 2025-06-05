@@ -649,6 +649,7 @@ let matrixBody;
 let categoryScores;
 let filterButtons;
 let editToggleBtn;
+let insightsContainer;
 
 // Edit mode state
 let editMode = false;
@@ -662,18 +663,23 @@ document.addEventListener('DOMContentLoaded', function() {
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
   editToggleBtn = document.getElementById('editToggle');
+  insightsContainer = document.querySelector('.strategic-insights .insights-grid');
+
+  loadInsights();
 
   if (editToggleBtn) {
     editToggleBtn.addEventListener('click', function() {
       editMode = !editMode;
       this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
       renderFeatureMatrix();
+      toggleInsightsEdit(editMode);
     });
   }
 
   setupFilterButtons();
   renderFeatureMatrix();
   renderCategoryScores();
+  toggleInsightsEdit(editMode);
 });
 
 // Setup filter button functionality
@@ -833,4 +839,33 @@ function handleStatusCycle(event) {
   competitorData.competitors[comp].features[category][feature] = next;
   saveData();
   renderFeatureMatrix();
+}
+
+// -------- Strategic Insights Editing ---------
+function loadInsights() {
+  if (!insightsContainer) return;
+  const saved = localStorage.getItem('strategicInsights');
+  if (saved) {
+    insightsContainer.innerHTML = saved;
+  }
+}
+
+function saveInsights() {
+  if (insightsContainer) {
+    localStorage.setItem('strategicInsights', insightsContainer.innerHTML);
+  }
+}
+
+function toggleInsightsEdit(enabled) {
+  if (!insightsContainer) return;
+  insightsContainer.querySelectorAll('li').forEach(li => {
+    if (enabled) {
+      li.setAttribute('contenteditable', 'true');
+      li.classList.add('insight-editable');
+    } else {
+      li.removeAttribute('contenteditable');
+      li.classList.remove('insight-editable');
+    }
+  });
+  if (!enabled) saveInsights();
 }
