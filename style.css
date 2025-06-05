@@ -1563,6 +1563,11 @@ a:hover {
   text-align: center;
 }
 
+.strategic-insights #insightsEditToggle {
+  display: block;
+  margin: 0 auto var(--space-20);
+}
+
 .insights-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
