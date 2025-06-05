@@ -1557,15 +1557,20 @@ a:hover {
 }
 
 /* Strategic Insights */
+.strategic-insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-24);
+}
+
 .strategic-insights h2 {
   font-size: var(--font-size-3xl);
-  margin-bottom: var(--space-24);
-  text-align: center;
+  margin: 0;
 }
 
 .strategic-insights #insightsEditToggle {
-  display: block;
-  margin: 0 auto var(--space-20);
+  margin: 0;
 }
 
 .insights-grid {
