@@ -644,11 +644,24 @@ function saveData() {
   localStorage.setItem('competitorData', JSON.stringify(competitorData));
 }
 
+function saveInsightTitles() {
+  localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
+}
+
 // DOM elements
 let matrixBody;
 let categoryScores;
 let filterButtons;
 let editToggleBtn;
+
+// Strategic insight titles
+const defaultInsightTitles = {
+  insight1: 'Market Positioning Analysis',
+  insight2: 'Key Integration Opportunities',
+  insight3: 'Priority Features for New AI Platform',
+  insight4: 'Technology Gap Analysis'
+};
+let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || defaultInsightTitles;
 
 // Edit mode state
 let editMode = false;
@@ -662,12 +675,22 @@ document.addEventListener('DOMContentLoaded', function() {
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
   editToggleBtn = document.getElementById('editToggle');
+  const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
+
+  insightHeaders.forEach((h, idx) => {
+    const id = `insight${idx + 1}`;
+    h.dataset.insightId = id;
+    if (insightTitles[id]) {
+      h.textContent = insightTitles[id];
+    }
+  });
 
   if (editToggleBtn) {
     editToggleBtn.addEventListener('click', function() {
       editMode = !editMode;
       this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
       renderFeatureMatrix();
+      toggleInsightEditMode(editMode);
     });
   }
 
@@ -833,4 +856,25 @@ function handleStatusCycle(event) {
   competitorData.competitors[comp].features[category][feature] = next;
   saveData();
   renderFeatureMatrix();
+}
+
+function toggleInsightEditMode(enabled) {
+  const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
+  insightHeaders.forEach(h => {
+    if (enabled) {
+      h.classList.add('editable-heading');
+      h.setAttribute('contenteditable', 'true');
+      h.addEventListener('blur', handleInsightBlur);
+    } else {
+      h.classList.remove('editable-heading');
+      h.removeAttribute('contenteditable');
+      h.removeEventListener('blur', handleInsightBlur);
+    }
+  });
+}
+
+function handleInsightBlur(e) {
+  const id = e.target.dataset.insightId;
+  insightTitles[id] = e.target.textContent.trim();
+  saveInsightTitles();
 }
