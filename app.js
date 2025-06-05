@@ -652,9 +652,11 @@ let matrixBody;
 let categoryScores;
 let filterButtons;
 let editToggleBtn;
+let insightsEditToggleBtn;
 
 // Edit mode state
 let editMode = false;
+let insightsEditMode = false;
 
 // Current filter
 let currentFilter = 'all';
@@ -665,6 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
   editToggleBtn = document.getElementById('editToggle');
+  insightsEditToggleBtn = document.getElementById('insightsEditToggle');
 
   if (editToggleBtn) {
     editToggleBtn.addEventListener('click', function() {
@@ -673,6 +676,16 @@ document.addEventListener('DOMContentLoaded', function() {
       renderFeatureMatrix();
     });
   }
+
+  if (insightsEditToggleBtn) {
+    insightsEditToggleBtn.addEventListener('click', function() {
+      insightsEditMode = !insightsEditMode;
+      this.textContent = insightsEditMode ? 'Exit Insights Edit' : 'Edit Insights';
+      applyInsightsEditMode();
+    });
+  }
+
+  applyInsightsEditMode();
 
   setupFilterButtons();
   setupInsightTitleEditing();
@@ -711,6 +724,28 @@ function setupInsightTitleEditing() {
       insightTitles[key] = title.textContent.trim();
       localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
     });
+  });
+}
+
+// Apply or remove editing capability for insight titles and list items
+function applyInsightsEditMode() {
+  const titles = document.querySelectorAll('.insight-title');
+  const items = document.querySelectorAll('.insights-grid li');
+
+  titles.forEach(t => {
+    if (insightsEditMode) {
+      t.setAttribute('contenteditable', 'true');
+    } else {
+      t.removeAttribute('contenteditable');
+    }
+  });
+
+  items.forEach(li => {
+    if (insightsEditMode) {
+      li.setAttribute('contenteditable', 'true');
+    } else {
+      li.removeAttribute('contenteditable');
+    }
   });
 }
 
