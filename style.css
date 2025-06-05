@@ -1575,6 +1575,15 @@ a:hover {
   color: var(--color-primary);
 }
 
+.insight-title[contenteditable="true"] {
+  cursor: text;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.insight-title[contenteditable="true"]:focus {
+  outline: var(--focus-outline);
+}
+
 .insights-grid ul,
 .insights-grid ol {
   margin: 0;
