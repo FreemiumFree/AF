@@ -652,7 +652,7 @@ function saveInsightTitles() {
 let matrixBody;
 let categoryScores;
 let filterButtons;
-let editToggleBtn;
+let editToggleBtns;
 
 // Strategic insight titles
 const defaultInsightTitles = {
@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
   matrixBody = document.getElementById('matrixBody');
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
-  editToggleBtn = document.getElementById('editToggle');
+  editToggleBtns = document.querySelectorAll('.edit-toggle');
   const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
 
   insightHeaders.forEach((h, idx) => {
@@ -685,12 +685,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  if (editToggleBtn) {
-    editToggleBtn.addEventListener('click', function() {
-      editMode = !editMode;
-      this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
-      renderFeatureMatrix();
-      toggleInsightEditMode(editMode);
+  if (editToggleBtns.length) {
+    editToggleBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        editMode = !editMode;
+        editToggleBtns.forEach(b => {
+          b.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
+        });
+        renderFeatureMatrix();
+        toggleInsightEditMode(editMode);
+      });
     });
   }
 
