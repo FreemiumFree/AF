@@ -1591,6 +1591,11 @@ a:hover {
   margin-bottom: 0;
 }
 
+.insight-editable {
+  outline: 1px dashed var(--color-primary);
+  padding: 2px;
+}
+
 /* Give breathing room at the bottom of the insights section */
 .strategic-insights {
   margin-bottom: var(--space-32);
