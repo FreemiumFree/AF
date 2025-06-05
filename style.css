@@ -1559,8 +1559,18 @@ a:hover {
 /* Strategic Insights */
 .strategic-insights h2 {
   font-size: var(--font-size-3xl);
+}
+
+.insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: var(--space-24);
-  text-align: center;
+}
+
+.insights-header h2 {
+  margin: 0;
+  text-align: left;
 }
 
 .insights-grid {
