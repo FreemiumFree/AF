@@ -634,59 +634,11 @@ const defaultData = {
         "tournament_history": "Tournament history tracking"
       }
     }
-  },
-  "insights": [
-    {
-      "title": "Market Positioning Analysis",
-      "ordered": false,
-      "items": [
-        "<strong>Fishbrain:</strong> Dominates social features with 15M+ users, strong AI capabilities, comprehensive community engagement",
-        "<strong>Infinite Outdoors:</strong> Pioneering private land access model, safety-focused, premium pricing strategy",
-        "<strong>FishingBooker:</strong> Clear leader in guided fishing experiences, strong booking infrastructure, global reach"
-      ]
-    },
-    {
-      "title": "Key Integration Opportunities",
-      "ordered": false,
-      "items": [
-        "Social verification + booking systems for enhanced trust and safety",
-        "AI predictions + private access for optimal fishing experiences",
-        "Comprehensive gear management + marketplace integration",
-        "Weather intelligence + guide booking for safety optimization",
-        "Conservation tracking + community engagement for sustainability"
-      ]
-    },
-    {
-      "title": "Priority Features for New AI Platform",
-      "ordered": true,
-      "items": [
-        "<strong>Advanced AI Engine:</strong> Beyond basic predictions - individual fish recognition, pattern learning",
-        "<strong>Unified Access Management:</strong> Combining public waters, private access, and guide services",
-        "<strong>Comprehensive Safety Suite:</strong> Emergency services, trip tracking, hazard reporting",
-        "<strong>Smart Gear Intelligence:</strong> Performance tracking, maintenance alerts, optimization recommendations",
-        "<strong>Conservation Integration:</strong> Real-time environmental monitoring, citizen science participation",
-        "<strong>Social Verification Network:</strong> Authenticated catches, peer validation, competition integrity"
-      ]
-    },
-    {
-      "title": "Technology Gap Analysis",
-      "ordered": false,
-      "items": [
-        "<strong>AI/ML:</strong> Only Fishbrain has comprehensive AI - major opportunity for advancement",
-        "<strong>Real-time Analytics:</strong> Limited cross-platform analytics and reporting capabilities",
-        "<strong>Safety Technology:</strong> Critical gap across all platforms in emergency features",
-        "<strong>Conservation Tech:</strong> Minimal environmental monitoring and sustainability features",
-        "<strong>Equipment Intelligence:</strong> No comprehensive tackle management or performance tracking"
-      ]
-    }
-  ]
+  }
 };
 
 // Load data from localStorage if available
 let competitorData = JSON.parse(localStorage.getItem('competitorData')) || defaultData;
-
-// Load saved strategic insight titles
-let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || {};
 
 function saveData() {
   localStorage.setItem('competitorData', JSON.stringify(competitorData));
@@ -697,7 +649,6 @@ let matrixBody;
 let categoryScores;
 let filterButtons;
 let editToggleBtn;
-let insightsGrid;
 
 // Edit mode state
 let editMode = false;
@@ -711,21 +662,18 @@ document.addEventListener('DOMContentLoaded', function() {
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
   editToggleBtn = document.getElementById('editToggle');
-  insightsGrid = document.getElementById('insightsGrid');
 
   if (editToggleBtn) {
     editToggleBtn.addEventListener('click', function() {
       editMode = !editMode;
       this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
       renderFeatureMatrix();
-      renderInsights();
     });
   }
 
   setupFilterButtons();
   renderFeatureMatrix();
   renderCategoryScores();
-  renderInsights();
 });
 
 // Setup filter button functionality
@@ -743,21 +691,6 @@ function setupFilterButtons() {
       
       // Re-render matrix
       renderFeatureMatrix();
-    });
-  });
-}
-
-// Enable editing for strategic insight titles
-function setupInsightTitleEditing() {
-  const titles = document.querySelectorAll('.insight-title');
-  titles.forEach(title => {
-    const key = title.dataset.key;
-    if (insightTitles[key]) {
-      title.textContent = insightTitles[key];
-    }
-    title.addEventListener('blur', () => {
-      insightTitles[key] = title.textContent.trim();
-      localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
     });
   });
 }
@@ -900,93 +833,4 @@ function handleStatusCycle(event) {
   competitorData.competitors[comp].features[category][feature] = next;
   saveData();
   renderFeatureMatrix();
-}
-
-// -------------------------------
-// Strategic Insights Management
-// -------------------------------
-
-function renderInsights() {
-  if (!insightsGrid) return;
-  insightsGrid.innerHTML = '';
-
-  competitorData.insights.forEach((insight, index) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-
-    const body = document.createElement('div');
-    body.className = 'card__body';
-
-    const h3 = document.createElement('h3');
-    h3.className = 'insight-title';
-    h3.contentEditable = true;
-    h3.dataset.key = `title${index + 1}`;
-    h3.textContent = insight.title;
-    body.appendChild(h3);
-
-    const list = document.createElement(insight.ordered ? 'ol' : 'ul');
-    insight.items.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = item;
-      list.appendChild(li);
-    });
-    body.appendChild(list);
-
-    const actions = document.createElement('div');
-    actions.className = 'insight-actions';
-
-    const editBtn = document.createElement('button');
-    editBtn.className = 'btn btn--secondary btn--sm';
-    editBtn.textContent = 'Edit';
-    editBtn.addEventListener('click', () => editInsight(index));
-    actions.appendChild(editBtn);
-
-    const delBtn = document.createElement('button');
-    delBtn.className = 'btn btn--outline btn--sm';
-    delBtn.textContent = 'Delete';
-    delBtn.addEventListener('click', () => deleteInsight(index));
-    actions.appendChild(delBtn);
-
-    body.appendChild(actions);
-    card.appendChild(body);
-    insightsGrid.appendChild(card);
-  });
-
-  const addBtn = document.createElement('button');
-  addBtn.className = 'btn btn--primary btn--sm add-insight-btn';
-  addBtn.textContent = 'Add Insight';
-  addBtn.addEventListener('click', addInsight);
-  insightsGrid.appendChild(addBtn);
-
-  setupInsightTitleEditing();
-}
-
-function editInsight(index) {
-  const insight = competitorData.insights[index];
-  const newTitle = prompt('Edit title', insight.title);
-  if (newTitle === null) return;
-  const newItems = prompt('Edit bullets (one per line)', insight.items.join('\n'));
-  if (newItems === null) return;
-  insight.title = newTitle.trim();
-  insight.items = newItems.split('\n').map(i => i.trim()).filter(i => i);
-  saveData();
-  renderInsights();
-}
-
-function deleteInsight(index) {
-  if (!confirm('Delete this insight?')) return;
-  competitorData.insights.splice(index, 1);
-  saveData();
-  renderInsights();
-}
-
-function addInsight() {
-  const title = prompt('New insight title');
-  if (!title) return;
-  const itemsText = prompt('Bullets (one per line)');
-  if (itemsText === null) return;
-  const items = itemsText.split('\n').map(i => i.trim()).filter(i => i);
-  competitorData.insights.push({ title: title.trim(), ordered: false, items });
-  saveData();
-  renderInsights();
 }
