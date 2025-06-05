@@ -644,11 +644,60 @@ function saveData() {
   localStorage.setItem('competitorData', JSON.stringify(competitorData));
 }
 
+function saveInsightTitles() {
+  localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
+}
+
+function saveInsightBullets() {
+  localStorage.setItem('insightBullets', JSON.stringify(insightBullets));
+}
+
 // DOM elements
 let matrixBody;
 let categoryScores;
 let filterButtons;
 let editToggleBtn;
+
+// Strategic insight bullets
+const defaultInsightBullets = {
+  insight1: [
+    '<strong>Fishbrain:</strong> Dominates social features with 15M+ users, strong AI capabilities, comprehensive community engagement',
+    '<strong>Infinite Outdoors:</strong> Pioneering private land access model, safety-focused, premium pricing strategy',
+    '<strong>FishingBooker:</strong> Clear leader in guided fishing experiences, strong booking infrastructure, global reach'
+  ],
+  insight2: [
+    'Social verification + booking systems for enhanced trust and safety',
+    'AI predictions + private access for optimal fishing experiences',
+    'Comprehensive gear management + marketplace integration',
+    'Weather intelligence + guide booking for safety optimization',
+    'Conservation tracking + community engagement for sustainability'
+  ],
+  insight3: [
+    '<strong>Advanced AI Engine:</strong> Beyond basic predictions - individual fish recognition, pattern learning',
+    '<strong>Unified Access Management:</strong> Combining public waters, private access, and guide services',
+    '<strong>Comprehensive Safety Suite:</strong> Emergency services, trip tracking, hazard reporting',
+    '<strong>Smart Gear Intelligence:</strong> Performance tracking, maintenance alerts, optimization recommendations',
+    '<strong>Conservation Integration:</strong> Real-time environmental monitoring, citizen science participation',
+    '<strong>Social Verification Network:</strong> Authenticated catches, peer validation, competition integrity'
+  ],
+  insight4: [
+    '<strong>AI/ML:</strong> Only Fishbrain has comprehensive AI - major opportunity for advancement',
+    '<strong>Real-time Analytics:</strong> Limited cross-platform analytics and reporting capabilities',
+    '<strong>Safety Technology:</strong> Critical gap across all platforms in emergency features',
+    '<strong>Conservation Tech:</strong> Minimal environmental monitoring and sustainability features',
+    '<strong>Equipment Intelligence:</strong> No comprehensive tackle management or performance tracking'
+  ]
+};
+let insightBullets = JSON.parse(localStorage.getItem('insightBullets')) || defaultInsightBullets;
+
+// Strategic insight titles
+const defaultInsightTitles = {
+  insight1: 'Market Positioning Analysis',
+  insight2: 'Key Integration Opportunities',
+  insight3: 'Priority Features for New AI Platform',
+  insight4: 'Technology Gap Analysis'
+};
+let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || defaultInsightTitles;
 
 // Edit mode state
 let editMode = false;
@@ -662,12 +711,33 @@ document.addEventListener('DOMContentLoaded', function() {
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
   editToggleBtn = document.getElementById('editToggle');
+  const insightCards = document.querySelectorAll('.strategic-insights .card');
+
+  insightCards.forEach((card, idx) => {
+    const id = `insight${idx + 1}`;
+    const header = card.querySelector('h3');
+    header.dataset.insightId = id;
+    if (insightTitles[id]) {
+      header.textContent = insightTitles[id];
+    }
+
+    const bullets = card.querySelectorAll('li');
+    bullets.forEach((li, liIdx) => {
+      li.dataset.insightId = id;
+      li.dataset.bulletIndex = liIdx;
+      if (insightBullets[id] && insightBullets[id][liIdx] !== undefined) {
+        li.innerHTML = insightBullets[id][liIdx];
+      }
+    });
+  });
 
   if (editToggleBtn) {
     editToggleBtn.addEventListener('click', function() {
       editMode = !editMode;
       this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
       renderFeatureMatrix();
+      toggleInsightEditMode(editMode);
+      toggleBulletEditMode(editMode);
     });
   }
 
@@ -833,4 +903,48 @@ function handleStatusCycle(event) {
   competitorData.competitors[comp].features[category][feature] = next;
   saveData();
   renderFeatureMatrix();
+}
+
+function toggleInsightEditMode(enabled) {
+  const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
+  insightHeaders.forEach(h => {
+    if (enabled) {
+      h.classList.add('editable-heading');
+      h.setAttribute('contenteditable', 'true');
+      h.addEventListener('blur', handleInsightBlur);
+    } else {
+      h.classList.remove('editable-heading');
+      h.removeAttribute('contenteditable');
+      h.removeEventListener('blur', handleInsightBlur);
+    }
+  });
+}
+
+function handleInsightBlur(e) {
+  const id = e.target.dataset.insightId;
+  insightTitles[id] = e.target.textContent.trim();
+  saveInsightTitles();
+}
+
+function toggleBulletEditMode(enabled) {
+  const bulletItems = document.querySelectorAll('.strategic-insights .card li');
+  bulletItems.forEach(li => {
+    if (enabled) {
+      li.classList.add('editable-bullet');
+      li.setAttribute('contenteditable', 'true');
+      li.addEventListener('blur', handleBulletBlur);
+    } else {
+      li.classList.remove('editable-bullet');
+      li.removeAttribute('contenteditable');
+      li.removeEventListener('blur', handleBulletBlur);
+    }
+  });
+}
+
+function handleBulletBlur(e) {
+  const id = e.target.dataset.insightId;
+  const index = parseInt(e.target.dataset.bulletIndex, 10);
+  if (!insightBullets[id]) insightBullets[id] = [];
+  insightBullets[id][index] = e.target.innerHTML.trim();
+  saveInsightBullets();
 }

@@ -1575,6 +1575,26 @@ a:hover {
   color: var(--color-primary);
 }
 
+.editable-heading {
+  cursor: text;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.editable-heading:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
+}
+
+.editable-bullet {
+  cursor: text;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.editable-bullet:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
+}
+
 .insights-grid ul,
 .insights-grid ol {
   margin: 0;
