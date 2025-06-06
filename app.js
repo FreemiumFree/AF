@@ -864,6 +864,7 @@ function handleStatusCycle(event) {
 
 function toggleInsightEditMode(enabled) {
   const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
+  const insightBullets = document.querySelectorAll('.strategic-insights li');
   insightHeaders.forEach(h => {
     if (enabled) {
       h.classList.add('editable-heading');
@@ -877,6 +878,18 @@ function toggleInsightEditMode(enabled) {
       h.removeEventListener('keydown', handleInsightKeydown);
     }
   });
+
+  insightBullets.forEach(li => {
+    if (enabled) {
+      li.classList.add('editable-bullet');
+      li.setAttribute('contenteditable', 'true');
+      li.addEventListener('keydown', handleBulletKeydown);
+    } else {
+      li.classList.remove('editable-bullet');
+      li.removeAttribute('contenteditable');
+      li.removeEventListener('keydown', handleBulletKeydown);
+    }
+  });
 }
 
 function handleInsightBlur(e) {
@@ -886,6 +899,13 @@ function handleInsightBlur(e) {
 }
 
 function handleInsightKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    e.target.blur();
+  }
+}
+
+function handleBulletKeydown(e) {
   if (e.key === 'Enter') {
     e.preventDefault();
     e.target.blur();
