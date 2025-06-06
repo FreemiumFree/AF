@@ -1542,6 +1542,7 @@ a:hover {
 .competitor-score {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-8);
 }
 
