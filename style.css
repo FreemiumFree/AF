@@ -1488,7 +1488,10 @@ a:hover {
 .category-score-header > div {
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
   text-align: center;
+  white-space: nowrap;
 }
 
 .category-score-header > div:first-child {
@@ -1539,6 +1542,7 @@ a:hover {
 .competitor-score {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-8);
 }
 
