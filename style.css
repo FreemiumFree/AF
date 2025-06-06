@@ -1486,10 +1486,15 @@ a:hover {
 }
 
 .category-score-header > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  white-space: nowrap;
 }
 
 .category-score-header > div:first-child {
+  justify-content: flex-start;
   text-align: left;
 }
 
