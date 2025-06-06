@@ -1559,8 +1559,18 @@ a:hover {
 /* Strategic Insights */
 .strategic-insights h2 {
   font-size: var(--font-size-3xl);
+}
+
+.insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: var(--space-24);
-  text-align: center;
+}
+
+.insights-header h2 {
+  margin: 0;
+  text-align: left;
 }
 
 .insights-grid {
@@ -1575,22 +1585,24 @@ a:hover {
   color: var(--color-primary);
 }
 
-.insight-title[contenteditable="true"] {
+.editable-heading {
   cursor: text;
   border-bottom: 1px dashed var(--color-border);
 }
 
-.insight-title[contenteditable="true"]:focus {
-  outline: var(--focus-outline);
+.editable-heading:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
 }
 
-.insights-grid li[contenteditable="true"] {
+.editable-bullet {
   cursor: text;
   border-bottom: 1px dashed var(--color-border);
 }
 
-.insights-grid li[contenteditable="true"]:focus {
-  outline: var(--focus-outline);
+.editable-bullet:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
 }
 
 .insights-grid ul,
@@ -1607,11 +1619,6 @@ a:hover {
 
 .insights-grid li:last-child {
   margin-bottom: 0;
-}
-
-.insight-editable {
-  outline: 1px dashed var(--color-primary);
-  padding: 2px;
 }
 
 /* Give breathing room at the bottom of the insights section */

@@ -640,19 +640,36 @@ const defaultData = {
 // Load data from localStorage if available
 let competitorData = JSON.parse(localStorage.getItem('competitorData')) || defaultData;
 
-// Load saved strategic insight titles
-let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || {};
-
 function saveData() {
   localStorage.setItem('competitorData', JSON.stringify(competitorData));
+}
+
+function saveInsightTitles() {
+  localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
+}
+
+// Save strategic insight bullets
+function saveInsightBullets() {
+  localStorage.setItem('insightBullets', JSON.stringify(insightBullets));
 }
 
 // DOM elements
 let matrixBody;
 let categoryScores;
 let filterButtons;
-let editToggleBtn;
-let insightsContainer;
+let editToggleBtns;
+
+// Strategic insight titles
+const defaultInsightTitles = {
+  insight1: 'Market Positioning Analysis',
+  insight2: 'Key Integration Opportunities',
+  insight3: 'Priority Features for New AI Platform',
+  insight4: 'Technology Gap Analysis'
+};
+let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || defaultInsightTitles;
+
+// Strategic insight bullets
+let insightBullets = JSON.parse(localStorage.getItem('insightBullets')) || {};
 
 // Edit mode state
 let editMode = false;
@@ -665,25 +682,49 @@ document.addEventListener('DOMContentLoaded', function() {
   matrixBody = document.getElementById('matrixBody');
   categoryScores = document.getElementById('categoryScores');
   filterButtons = document.querySelectorAll('.filter-btn');
-  editToggleBtn = document.getElementById('editToggle');
-  insightsContainer = document.querySelector('.strategic-insights .insights-grid');
+  editToggleBtns = document.querySelectorAll('.edit-toggle');
+  const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
 
-  loadInsights();
+  insightHeaders.forEach((h, idx) => {
+    const id = `insight${idx + 1}`;
+    h.dataset.insightId = id;
+    if (insightTitles[id]) {
+      h.textContent = insightTitles[id];
+    }
+  });
 
-  if (editToggleBtn) {
-    editToggleBtn.addEventListener('click', function() {
-      editMode = !editMode;
-      this.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
-      renderFeatureMatrix();
-      toggleInsightsEdit(editMode);
+  // Initialize bullet data and load saved content
+  const insightCards = document.querySelectorAll('.strategic-insights .card');
+  insightCards.forEach(card => {
+    const heading = card.querySelector('h3');
+    if (!heading) return;
+    const id = heading.dataset.insightId;
+    const bullets = card.querySelectorAll('li');
+    bullets.forEach((li, idx) => {
+      li.dataset.insightId = id;
+      li.dataset.bulletIndex = idx;
+      if (insightBullets[id] && insightBullets[id][idx]) {
+        li.innerHTML = insightBullets[id][idx];
+      }
+    });
+  });
+
+  if (editToggleBtns.length) {
+    editToggleBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        editMode = !editMode;
+        editToggleBtns.forEach(b => {
+          b.textContent = editMode ? 'Exit Edit Mode' : 'Edit Mode';
+        });
+        renderFeatureMatrix();
+        toggleInsightEditMode(editMode);
+      });
     });
   }
 
   setupFilterButtons();
-  setupInsightTitleEditing();
   renderFeatureMatrix();
   renderCategoryScores();
-  toggleInsightsEdit(editMode);
 });
 
 // Setup filter button functionality
@@ -701,21 +742,6 @@ function setupFilterButtons() {
       
       // Re-render matrix
       renderFeatureMatrix();
-    });
-  });
-}
-
-// Enable editing for strategic insight titles
-function setupInsightTitleEditing() {
-  const titles = document.querySelectorAll('.insight-title');
-  titles.forEach(title => {
-    const key = title.dataset.key;
-    if (insightTitles[key]) {
-      title.textContent = insightTitles[key];
-    }
-    title.addEventListener('blur', () => {
-      insightTitles[key] = title.textContent.trim();
-      localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
     });
   });
 }
@@ -860,31 +886,62 @@ function handleStatusCycle(event) {
   renderFeatureMatrix();
 }
 
-// -------- Strategic Insights Editing ---------
-function loadInsights() {
-  if (!insightsContainer) return;
-  const saved = localStorage.getItem('strategicInsights');
-  if (saved) {
-    insightsContainer.innerHTML = saved;
-  }
-}
-
-function saveInsights() {
-  if (insightsContainer) {
-    localStorage.setItem('strategicInsights', insightsContainer.innerHTML);
-  }
-}
-
-function toggleInsightsEdit(enabled) {
-  if (!insightsContainer) return;
-  insightsContainer.querySelectorAll('li').forEach(li => {
+function toggleInsightEditMode(enabled) {
+  const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
+  const insightBullets = document.querySelectorAll('.strategic-insights li');
+  insightHeaders.forEach(h => {
     if (enabled) {
-      li.setAttribute('contenteditable', 'true');
-      li.classList.add('insight-editable');
+      h.classList.add('editable-heading');
+      h.setAttribute('contenteditable', 'true');
+      h.addEventListener('blur', handleInsightBlur);
+      h.addEventListener('keydown', handleInsightKeydown);
     } else {
-      li.removeAttribute('contenteditable');
-      li.classList.remove('insight-editable');
+      h.classList.remove('editable-heading');
+      h.removeAttribute('contenteditable');
+      h.removeEventListener('blur', handleInsightBlur);
+      h.removeEventListener('keydown', handleInsightKeydown);
     }
   });
-  if (!enabled) saveInsights();
+
+  insightBullets.forEach(li => {
+    if (enabled) {
+      li.classList.add('editable-bullet');
+      li.setAttribute('contenteditable', 'true');
+      li.addEventListener('keydown', handleBulletKeydown);
+      li.addEventListener('blur', handleBulletBlur);
+    } else {
+      li.classList.remove('editable-bullet');
+      li.removeAttribute('contenteditable');
+      li.removeEventListener('keydown', handleBulletKeydown);
+      li.removeEventListener('blur', handleBulletBlur);
+    }
+  });
+}
+
+function handleInsightBlur(e) {
+  const id = e.target.dataset.insightId;
+  insightTitles[id] = e.target.textContent.trim();
+  saveInsightTitles();
+}
+
+function handleInsightKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    e.target.blur();
+  }
+}
+
+function handleBulletKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    e.target.blur();
+  }
+}
+
+function handleBulletBlur(e) {
+  const insightId = e.target.dataset.insightId;
+  const bulletIndex = e.target.dataset.bulletIndex;
+  if (!insightBullets[insightId]) insightBullets[insightId] = [];
+  insightBullets[insightId][bulletIndex] = e.target.innerHTML.trim();
+  saveInsightBullets();
 }
