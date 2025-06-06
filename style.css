@@ -1478,6 +1478,7 @@ a:hover {
 .category-score-header {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  justify-items: center;
   background: var(--color-secondary);
   font-weight: var(--font-weight-semibold);
   gap: var(--space-12);
@@ -1502,6 +1503,7 @@ a:hover {
 .category-score {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  justify-items: center;
   align-items: center;
   gap: var(--space-12);
   padding: var(--space-8) 0;
