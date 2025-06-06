@@ -648,6 +648,11 @@ function saveInsightTitles() {
   localStorage.setItem('insightTitles', JSON.stringify(insightTitles));
 }
 
+// Save strategic insight bullets
+function saveInsightBullets() {
+  localStorage.setItem('insightBullets', JSON.stringify(insightBullets));
+}
+
 // DOM elements
 let matrixBody;
 let categoryScores;
@@ -662,6 +667,9 @@ const defaultInsightTitles = {
   insight4: 'Technology Gap Analysis'
 };
 let insightTitles = JSON.parse(localStorage.getItem('insightTitles')) || defaultInsightTitles;
+
+// Strategic insight bullets
+let insightBullets = JSON.parse(localStorage.getItem('insightBullets')) || {};
 
 // Edit mode state
 let editMode = false;
@@ -683,6 +691,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (insightTitles[id]) {
       h.textContent = insightTitles[id];
     }
+  });
+
+  // Initialize bullet data and load saved content
+  const insightCards = document.querySelectorAll('.strategic-insights .card');
+  insightCards.forEach(card => {
+    const heading = card.querySelector('h3');
+    if (!heading) return;
+    const id = heading.dataset.insightId;
+    const bullets = card.querySelectorAll('li');
+    bullets.forEach((li, idx) => {
+      li.dataset.insightId = id;
+      li.dataset.bulletIndex = idx;
+      if (insightBullets[id] && insightBullets[id][idx]) {
+        li.innerHTML = insightBullets[id][idx];
+      }
+    });
   });
 
   if (editToggleBtns.length) {
@@ -864,6 +888,7 @@ function handleStatusCycle(event) {
 
 function toggleInsightEditMode(enabled) {
   const insightHeaders = document.querySelectorAll('.strategic-insights .card h3');
+  const insightBullets = document.querySelectorAll('.strategic-insights li');
   insightHeaders.forEach(h => {
     if (enabled) {
       h.classList.add('editable-heading');
@@ -875,6 +900,20 @@ function toggleInsightEditMode(enabled) {
       h.removeAttribute('contenteditable');
       h.removeEventListener('blur', handleInsightBlur);
       h.removeEventListener('keydown', handleInsightKeydown);
+    }
+  });
+
+  insightBullets.forEach(li => {
+    if (enabled) {
+      li.classList.add('editable-bullet');
+      li.setAttribute('contenteditable', 'true');
+      li.addEventListener('keydown', handleBulletKeydown);
+      li.addEventListener('blur', handleBulletBlur);
+    } else {
+      li.classList.remove('editable-bullet');
+      li.removeAttribute('contenteditable');
+      li.removeEventListener('keydown', handleBulletKeydown);
+      li.removeEventListener('blur', handleBulletBlur);
     }
   });
 }
@@ -890,4 +929,19 @@ function handleInsightKeydown(e) {
     e.preventDefault();
     e.target.blur();
   }
+}
+
+function handleBulletKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    e.target.blur();
+  }
+}
+
+function handleBulletBlur(e) {
+  const insightId = e.target.dataset.insightId;
+  const bulletIndex = e.target.dataset.bulletIndex;
+  if (!insightBullets[insightId]) insightBullets[insightId] = [];
+  insightBullets[insightId][bulletIndex] = e.target.innerHTML.trim();
+  saveInsightBullets();
 }
