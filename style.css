@@ -98,7 +98,7 @@
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
-  --container-xl: 1280px;
+  --container-xl: 1600px;
 }
 
 /* Dark mode colors */
@@ -753,7 +753,7 @@ select.form-control {
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
-  --container-xl: 1280px;
+  --container-xl: 1600px;
 }
 
 /* Dark mode colors */
@@ -1459,7 +1459,7 @@ a:hover {
 
 .gap-analysis-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: var(--space-20);
 }
 
@@ -1476,9 +1476,10 @@ a:hover {
 }
 
 .category-score {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
   align-items: center;
+  gap: var(--space-12);
   padding: var(--space-8) 0;
   border-bottom: 1px solid var(--color-border);
 }
@@ -1512,6 +1513,21 @@ a:hover {
 
 .score-fill.low {
   background: var(--color-error);
+}
+
+.competitor-score {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.competitor-score .score-bar {
+  margin-left: 0;
+}
+
+.gap-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .opportunity {
