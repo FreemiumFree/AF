@@ -1478,7 +1478,7 @@ a:hover {
 .category-score-header {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
-  justify-items: center;
+  justify-items: start;
   background: var(--color-secondary);
   font-weight: var(--font-weight-semibold);
   gap: var(--space-12);
@@ -1498,7 +1498,7 @@ a:hover {
 .category-score {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
-  justify-items: center;
+  justify-items: start;
   align-items: center;
   gap: var(--space-12);
   padding: var(--space-8) 0;
@@ -1539,7 +1539,7 @@ a:hover {
 .competitor-score {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-8);
 }
 
