@@ -98,7 +98,7 @@
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
-  --container-xl: 1280px;
+  --container-xl: 1600px;
 }
 
 /* Dark mode colors */
@@ -753,7 +753,7 @@ select.form-control {
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
-  --container-xl: 1280px;
+  --container-xl: 1600px;
 }
 
 /* Dark mode colors */
