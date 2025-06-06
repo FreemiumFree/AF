@@ -843,7 +843,14 @@ function calculateCategoryGap(categoryKey) {
 function renderCategoryScores() {
   if (!categoryScores) return;
 
-  categoryScores.innerHTML = '';
+  categoryScores.innerHTML = `
+    <div class="category-score-header">
+      <div>Category</div>
+      <div>Fishbrain</div>
+      <div>Infinite Outdoors</div>
+      <div>FishingBooker</div>
+      <div>Gap</div>
+    </div>`;
   const categories = competitorData.feature_categories;
   const competitors = ['fishbrain', 'infinite_outdoors', 'fishingbooker'];
 

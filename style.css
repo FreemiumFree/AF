@@ -1475,6 +1475,24 @@ a:hover {
   margin-bottom: var(--space-16);
 }
 
+.category-score-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  background: var(--color-secondary);
+  font-weight: var(--font-weight-semibold);
+  gap: var(--space-12);
+  padding: var(--space-8) 0;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.category-score-header > div {
+  text-align: center;
+}
+
+.category-score-header > div:first-child {
+  text-align: left;
+}
+
 .category-score {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
