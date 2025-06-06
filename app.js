@@ -812,48 +812,55 @@ function renderFeatureMatrix() {
 }
 
 
-// Calculate category scores
+// Feature score helper
+function getFeatureScore(value) {
+  if (value === true || value === 'full') return 1;
+  if (value === 'partial' || value === 'premium') return 0.5;
+  return 0;
+}
+
+// Calculate category score for a competitor
 function calculateCategoryScore(categoryKey, competitorKey) {
   const features = competitorData.competitors[competitorKey].features[categoryKey];
-  const totalFeatures = Object.keys(features).length;
-  
-  let score = 0;
-  Object.values(features).forEach(value => {
-    if (value === true) score += 1;
-    else if (value === 'premium' || value === 'partial') score += 0.5;
+  const featureIds = Object.keys(features);
+  let total = 0;
+  featureIds.forEach(fid => {
+    total += getFeatureScore(features[fid]);
   });
-  
-  return Math.round((score / totalFeatures) * 100);
+  return Math.round((total / featureIds.length) * 100);
 }
+
 
 // Render category scores
 function renderCategoryScores() {
   if (!categoryScores) return;
 
+  categoryScores.innerHTML = '';
   const categories = competitorData.feature_categories;
   const competitors = ['fishbrain', 'infinite_outdoors', 'fishingbooker'];
 
   Object.keys(categories).forEach(categoryKey => {
     const category = categories[categoryKey];
-    
+
     const scoreDiv = document.createElement('div');
     scoreDiv.className = 'category-score';
-    
+
     const scores = competitors.map(comp => calculateCategoryScore(categoryKey, comp));
-    const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-    
-    let scoreClass = 'low';
-    if (avgScore >= 70) scoreClass = 'high';
-    else if (avgScore >= 40) scoreClass = 'medium';
-    
-    scoreDiv.innerHTML = `
-      <span>${category.name}</span>
-      <div class="score-bar">
-        <div class="score-fill ${scoreClass}" style="width: ${avgScore}%"></div>
-      </div>
-      <span>${avgScore}%</span>
-    `;
-    
+
+    let cells = `<span>${category.name}</span>`;
+    scores.forEach(score => {
+      let cls = 'low';
+      if (score >= 70) cls = 'high';
+      else if (score >= 40) cls = 'medium';
+      cells += `
+        <div class="competitor-score">
+          <div class="score-bar"><div class="score-fill ${cls}" style="width: ${score}%"></div></div>
+          <span>${score}%</span>
+        </div>`;
+    });
+
+    scoreDiv.innerHTML = cells;
+
     categoryScores.appendChild(scoreDiv);
   });
 }
@@ -884,6 +891,7 @@ function handleStatusCycle(event) {
   competitorData.competitors[comp].features[category][feature] = next;
   saveData();
   renderFeatureMatrix();
+  renderCategoryScores();
 }
 
 function toggleInsightEditMode(enabled) {
